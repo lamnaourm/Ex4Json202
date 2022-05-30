@@ -2,7 +2,12 @@ package com.example.ex4json202;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,10 +19,33 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    ListView ls;
+    ArrayList<Etudiant> etds;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        etds = getAllEtudaints();
+        ArrayList<String> noms = new ArrayList<>();
+        ls = findViewById(R.id.lst);
+
+        for(Etudiant e : etds)
+            noms.add(e.getIdent() + " - " + e.getNom());
+
+        ArrayAdapter ad = new ArrayAdapter(this, android.R.layout.simple_list_item_1,noms);
+        ls.setAdapter(ad);
+
+        ls.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent in = new Intent(MainActivity.this, DetailEtudiant.class);
+                in.putExtra("et",etds.get(i));
+                startActivity(in);
+            }
+        });
+
     }
 
     public String LoadJsonFromRaw(int resId){
