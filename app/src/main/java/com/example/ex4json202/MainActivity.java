@@ -4,8 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,5 +32,32 @@ public class MainActivity extends AppCompatActivity {
         return "";
     }
 
+    public ArrayList<Etudiant> getAllEtudaints(){
+        try {
+            ArrayList<Etudiant> ets = new ArrayList<>();
+            JSONArray arr = new JSONArray(LoadJsonFromRaw(R.raw.resultats));
+
+            for(int i=0;i<arr.length();i++){
+                JSONObject obj = arr.getJSONObject(i);
+
+                Etudiant e = new Etudiant();
+                e.setIdent(obj.getString("ident"));
+                e.setNom(obj.getString("nom"));
+                e.setDateNaissance(obj.getString("naissance"));
+                e.setVille(obj.getString("ville"));
+                e.setNoteFR(obj.getJSONObject("resultat").getDouble("fr"));
+                e.setNoteHist(obj.getJSONObject("resultat").getDouble("hist"));
+                e.setNotePhys(obj.getJSONObject("resultat").getDouble("phys"));
+                e.setNoteMath(obj.getJSONObject("resultat").getDouble("math"));
+
+                ets.add(e);
+            }
+
+            return ets;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
